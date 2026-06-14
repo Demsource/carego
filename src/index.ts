@@ -2,13 +2,14 @@ import express from "express";
 import type { Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import mangoose from "mongoose";
+import { connectDB } from "./config/db.js";
+import serviceRoutes from "./routes/serviceRoutes.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const MONGODB_URI = process.env.MONGODB_URI || "";
 
 // Enable CORS Middleware
 app.use(
@@ -21,20 +22,18 @@ app.use(
 
 app.use(express.json());
 
+// Routes
+app.use("/api/services", serviceRoutes);
+
 app.get("/", (req: Request, res: Response) => {
   res.send("CareGo Back-End is running perfectly");
 });
 
-mangoose
-  .connect(MONGODB_URI)
-  .then(() => {
-    console.log("Connected to MongoDB Atlas");
+// Global Error Handler
+app.use(errorHandler);
 
-    app.listen(PORT, () => {
-      console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.error("MongoDB connection failed. Server not started:", err);
-    process.exit(1); // Kill the app so Render knows the deploy failed
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`[server]: Server is running at http://localhost:${PORT}`);
   });
+});
