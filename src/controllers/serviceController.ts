@@ -10,7 +10,7 @@ export const getAllServices = async (
   try {
     // Delegate database logic to the service layer
     const formattedServices = await fetchAndFormatServices();
-    res.status(200).json({ serviceNames: formattedServices });
+    res.status(200).json(formattedServices);
   } catch (error) {
     // Pass control directly to the global error handler
     next(error);
