@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { connectDB } from "./config/db.js";
 import serviceRoutes from "./routes/serviceRoutes.js";
+import nurseRoutes from "./routes/nurseRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
 dotenv.config();
@@ -24,6 +25,8 @@ app.use(express.json());
 
 // Routes
 app.use("/api/services", serviceRoutes);
+
+app.use("/api/nurses", nurseRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("CareGo Back-End is running perfectly");
