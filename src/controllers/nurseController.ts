@@ -28,9 +28,12 @@ export const registerNurse = async (
     // Process files if passwords match
     const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
+    // Build the full URL dynamically
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+
     // Extract photo details
     const photoUrl = files?.["photo"]
-      ? `/uploads/photos/${files["photo"][0].filename}`
+      ? `${baseUrl}/uploads/photos/${files["photo"][0].filename}`
       : "";
 
     // Extract diploma files metadata
@@ -68,7 +71,6 @@ export const registerNurse = async (
 
     // Send to Service layer
     const registeredNurse = await registerNurseAccount(nurseData);
-    
 
     res.status(201).json(registeredNurse);
   } catch (error) {

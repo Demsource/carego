@@ -1,3 +1,5 @@
+import path from "path";
+import { fileURLToPath } from "url";
 import express from "express";
 import type { Request, Response } from "express";
 import dotenv from "dotenv";
@@ -8,6 +10,9 @@ import nurseRoutes from "./routes/nurseRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -22,6 +27,13 @@ app.use(
 );
 
 app.use(express.json());
+
+// Serve static files from the uploads/photos directory statically for profile pictures
+// so the files can actually be accessed via a browser or front-end
+app.use(
+  "/uploads/photos",
+  express.static(path.join(__dirname, "../uploads/photos")),
+);
 
 // Routes
 app.use("/api/services", serviceRoutes);
