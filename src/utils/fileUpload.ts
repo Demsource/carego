@@ -1,28 +1,36 @@
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 import multer from "multer";
 import path from "path";
-import fs from "fs";
+import dotenv from 'dotenv';
 
-// Ensure upload directories exist
-const uploadDir = path.join(process.cwd(), "uploads/photos");
-const docsDir = path.join(process.cwd(), "uploads/documents");
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
-if (!fs.existsSync(docsDir)) fs.mkdirSync(docsDir, { recursive: true });
+// Force load env variables immediately before cloudinary config runs
+dotenv.config();
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    if (file.fieldname === "photo") {
-      cb(null, uploadDir);
-    } else {
-      cb(null, docsDir);
-    }
-  },
-  filename: (req, file, cb) => {
-    // Generates a unique name: fieldname-timestamp.extension
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(
-      null,
-      `${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`,
-    );
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// Setup the storage engine
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: async (req, file) => {
+    const isPhoto = file.fieldname === "photo";
+
+    return {
+      // Group them into clean folders on your Cloudinary dashboard
+      folder: isPhoto ? "carego/photos" : "carego/documents",
+
+      // Dynamically extract 'png', 'jpg', 'jpeg', or 'pdf' from the original file name
+      format: path.extname(file.originalname).substring(1).toLowerCase(),
+
+      public_id: `${file.fieldname}-${Date.now()}-${Math.round(Math.random() * 1e9)}`,
+
+      // For sensitive documents, require a signed token for access control instead of public delivery
+      access_control: isPhoto ? undefined : [{ access_type: "token" }],
+    };
   },
 });
 

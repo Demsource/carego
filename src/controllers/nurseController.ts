@@ -25,21 +25,21 @@ export const registerNurse = async (
       return; // Stop execution here so no files or database records are processed
     }
 
+    console.log('Uploaded Files:', req.files);
+    
     // Process files if passwords match
     const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
-    // Build the full URL dynamically
-    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    // // Build the full URL dynamically
+    // const baseUrl = `${req.protocol}://${req.get("host")}`;
 
-    // Extract photo details
-    const photoUrl = files?.["photo"]
-      ? `${baseUrl}/uploads/photos/${files["photo"][0].filename}`
-      : "";
+    // Cloudinary places the final hosted web URL in file.path
+    const photoUrl = files?.["photo"] ? files["photo"][0].path : "";
 
     // Extract diploma files metadata
     const diplomasAndCertificatesFiles =
       files?.["diplomas"]?.map((file) => ({
-        fileId: file.filename,
+        fileId: file.filename, // This acts as the public_id on Cloudinary
         fileName: file.originalname,
         fileType: file.mimetype,
         fileSize: file.size,
