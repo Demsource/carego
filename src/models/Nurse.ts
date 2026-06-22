@@ -29,6 +29,7 @@ export interface INurse extends Document {
   birthDate: Date;
   age: number;
   email: string;
+  role: "admin" | "nurse" | "patient";
   passwordHash: string;
   mobile: string;
   address: string;
@@ -92,6 +93,11 @@ const nurseSchema = new Schema<INurse>(
       unique: true,
       lowercase: true,
       trim: true,
+    },
+    role: {
+      type: String,
+      enum: ["admin", "nurse", "patient"],
+      required: true,
     },
     passwordHash: { type: String, required: true },
     mobile: { type: String, required: true, unique: true },
