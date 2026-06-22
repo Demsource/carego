@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { registerNurseAccount } from "../services/nurseLogic.js";
+import { registerNurseAccount } from "../services/nurseRegistrationLogic.js";
 
 export const registerNurse = async (
   req: Request,
@@ -25,13 +25,8 @@ export const registerNurse = async (
       return; // Stop execution here so no files or database records are processed
     }
 
-    console.log('Uploaded Files:', req.files);
-    
     // Process files if passwords match
     const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-
-    // // Build the full URL dynamically
-    // const baseUrl = `${req.protocol}://${req.get("host")}`;
 
     // Cloudinary places the final hosted web URL in file.path
     const photoUrl = files?.["photo"] ? files["photo"][0].path : "";
@@ -70,9 +65,13 @@ export const registerNurse = async (
     };
 
     // Send to Service layer
-    const registeredNurse = await registerNurseAccount(nurseData);
+    const { token, nurse } = await registerNurseAccount(nurseData);
 
-    res.status(201).json(registeredNurse);
+    res.status(201).json({
+      success: true,
+      token,
+      data: nurse,
+    });
   } catch (error) {
     next(error);
   }
