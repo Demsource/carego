@@ -1,5 +1,7 @@
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import { Nurse, INurse, IWorkExperience } from "../models/Nurse.js";
+import { NurseAuthResponse } from "../types/auth.types.js";
 
 /**
  * Calculate age based on birth date string/Date
@@ -46,7 +48,7 @@ export const calculateExperience = (
 // Register a new nurse, hash the password, and apply business logic calculations
 export const registerNurseAccount = async (
   nurseData: Partial<INurse>,
-): Promise<Omit<INurse, "passwordHash">> => {
+): Promise<NurseAuthResponse> => {
   if (!nurseData.birthDate) throw new Error("Birth date is required");
   if (!nurseData.passwordHash) throw new Error("Password is required");
 
@@ -62,6 +64,7 @@ export const registerNurseAccount = async (
   // Build complete schema object with the securely hashed password and with defaults explicit or handled by mongoose
   const newNurse = new Nurse({
     ...nurseData,
+    role: "nurse",
     age: calculatedAge,
     yearsOfExperience: calculatedExp,
     passwordHash: hashedPassword,
@@ -69,9 +72,22 @@ export const registerNurseAccount = async (
 
   await newNurse.save();
 
-  // Convert to object and delete passwordHash before returning to client
-  const nurseObject = newNurse.toObject();
+  // Convert Mongoose document to a plain object and strip passwordHash using a safe inline cast
+  const nurseObject = newNurse.toObject() as INurse;
   delete (nurseObject as any).passwordHash;
 
-  return nurseObject;
+  // Generate the token
+  const token = jwt.sign(
+    { id: nurseObject._id, role: "nurse" },
+    process.env.JWT_SECRET as string,
+    {
+      expiresIn: (process.env.JWT_EXPIRES_IN ||
+        "1d") as jwt.SignOptions["expiresIn"],
+    },
+  );
+
+  return {
+    token,
+    nurse: nurseObject,
+  };
 };

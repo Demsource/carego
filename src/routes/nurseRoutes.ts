@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { registerNurse } from "../controllers/nurseController.js";
+import { registerNurse } from "../controllers/nurseRegistrationController.js";
+import { loginNurse } from '../controllers/nurseAuthController.js';
 import { upload } from "../utils/fileUpload.js";
 
 const router = Router();
@@ -12,5 +13,8 @@ const uploadFields = upload.fields([
 
 // POST /api/nurses/register
 router.post("/register", uploadFields, registerNurse);
+
+// POST /api/nurses/login (Expects application/json raw body)
+router.post("/login", loginNurse);
 
 export default router;
