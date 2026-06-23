@@ -1,4 +1,5 @@
 import { INurse } from "../models/Nurse.js";
+import { IPatient } from "../models/Patient.js";
 
 // Shared input credentials structure for Nurse and Patient roles
 export interface LoginCredentials {
@@ -13,5 +14,5 @@ export interface NurseAuthResponse {
 
 export interface PatientAuthResponse {
   token: string;
-  patient: Record<string, any>; // Will hold the clean patient database document
+  patient: IPatient;
 }
