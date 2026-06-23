@@ -6,8 +6,8 @@ import cors from "cors";
 import { connectDB } from "./config/db.js";
 import serviceRoutes from "./routes/serviceRoutes.js";
 import nurseRoutes from "./routes/nurseRoutes.js";
+import patientRoutes from "./routes/patientRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
-
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -27,6 +27,8 @@ app.use(express.json());
 app.use("/api/services", serviceRoutes);
 
 app.use("/api/nurses", nurseRoutes);
+
+app.use("/api/patients", patientRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("CareGo Back-End is running perfectly");
