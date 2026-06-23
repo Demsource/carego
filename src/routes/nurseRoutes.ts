@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { registerNurse } from "../controllers/nurseRegistrationController.js";
-import { loginNurse } from '../controllers/nurseAuthController.js';
+import { loginNurse } from "../controllers/nurseAuthController.js";
 import { upload } from "../utils/fileUpload.js";
 
 const router = Router();
@@ -12,6 +12,7 @@ const uploadFields = upload.fields([
 ]);
 
 // POST /api/nurses/register
+// // Expects: multipart/form-data (contains 'photo' and 'diplomas' files + stringified JSON arrays for arrays)
 router.post("/register", uploadFields, registerNurse);
 
 // POST /api/nurses/login (Expects application/json raw body)
