@@ -2,7 +2,7 @@ import { Router } from "express";
 import { registerNurse } from "../controllers/nurseRegistrationController.js";
 import { loginNurse } from "../controllers/nurseAuthController.js";
 import { upload } from "../utils/fileUpload.js";
-import { getPopularNursesList } from "../controllers/nurseFetchController.js";
+import { getAllNursesList, getPopularNursesList } from "../controllers/nurseFetchController.js";
 
 const router = Router();
 
@@ -21,5 +21,7 @@ router.post("/login", loginNurse);
 
 // Fetch Popular/Top Nurses
 router.get("/popular", getPopularNursesList);
+// Get all nurses route (GET /api/nurses)
+router.get("/", getAllNursesList);
 
 export default router;

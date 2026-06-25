@@ -42,7 +42,7 @@ Registers a new nurse profile, uploads files to Cloudinary, and automatically lo
 
 ### Success Response (201 Created)
 
-```
+```json
 {
   "success": true,
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -81,7 +81,7 @@ Authenticates an existing nurse using their email and password.
 
 ### Request Body (JSON)
 
-```
+```json
 {
   "email": "john.doe@example.com",
   "password": "securepassword123"
@@ -91,6 +91,120 @@ Authenticates an existing nurse using their email and password.
 ### Success Response (200 OK)
 
 Returns the same layout schema structure as registration, containing `success`, `token`, and the nurse profile metadata in `data`.
+
+## 1.3 Get Popular Nurses
+
+Retrieves the top 4 popular nurses from the database. This is a public presentation endpoint that optimizes data transfer by projecting only the necessary fields required for the front-end display cards.
+
+- **URL:** `/nurses/popular`
+- **Method:** `GET`
+- **Content-Type:** `None`
+
+### Request Headers
+
+No authorization or custom headers are required for this public route.
+
+### Request Body
+
+None (Empty query)
+
+### Success Response (200 OK)
+
+```json
+{
+  "success": true,
+  "count": 4,
+  "data": [
+    {
+      "_id": "6a3964ae033157dbfaee8cce",
+      "firstname": "John",
+      "lastname": "Doe",
+      "photoUrl": "[https://res.cloudinary.com/](https://res.cloudinary.com/)...",
+      "specialization": ["Head nurse"],
+      "workExperience": [
+        {
+          "employer": "City Hospital",
+          "position": "General Nurse",
+          "startDate": "2018-01-01",
+          "endDate": "2020-12-31"
+        }
+      ]
+    },
+    {
+      "_id": "6a3964ae033157dbfaee8ccf",
+      "firstname": "Sarah",
+      "lastname": "Connor",
+      "photoUrl": "[https://res.cloudinary.com/](https://res.cloudinary.com/)...",
+      "specialization": ["ICU Specialist", "Pediatric Care"],
+      "workExperience": [
+        {
+          "employer": "St. Jude Hospital",
+          "position": "Senior Nurse",
+          "startDate": "2021-03-15",
+          "endDate": "2025-05-10"
+        }
+      ]
+    }
+  ]
+}
+```
+
+## 1.4 Get All Nurses (Card View)
+
+Retrieves a complete list of all registered nurses in the database. Like the popular nurses endpoint, this is a public presentation route designed specifically for rendering light front-end directory cards by limiting the payload to only the essential visual details.
+
+- **URL:** `/nurses`
+- **Method:** `GET`
+- **Content-Type:** `None`
+
+### Request Headers
+
+No authorization or custom headers are required for this public route.
+
+### Request Body
+
+None (Empty query)
+
+### Success Response (200 OK)
+
+```json
+{
+  "success": true,
+  "count": 2,
+  "data": [
+    {
+      "_id": "6a3964ae033157dbfaee8cce",
+      "firstname": "John",
+      "lastname": "Doe",
+      "photoUrl": "[https://res.cloudinary.com/](https://res.cloudinary.com/)...",
+      "specialization": ["Head nurse"],
+      "workExperience": [
+        {
+          "employer": "City Hospital",
+          "position": "General Nurse",
+          "startDate": "2018-01-01",
+          "endDate": "2020-12-31"
+        }
+      ]
+    },
+    {
+      "_id": "6a3964ae033157dbfaee8ccf",
+      "firstname": "Sarah",
+      "lastname": "Connor",
+      "photoUrl": "[https://res.cloudinary.com/](https://res.cloudinary.com/)...",
+      "specialization": ["ICU Specialist", "Pediatric Care"],
+      "workExperience": [
+        {
+          "employer": "St. Jude Hospital",
+          "position": "Senior Nurse",
+          "startDate": "2021-03-15",
+          "endDate": "2025-05-10"
+        }
+      ]
+    }
+  ]
+}
+```
 
 # 2. Patient Endpoints
 
@@ -104,7 +218,7 @@ Registers a new patient profile, initializes medical tracking limits, and automa
 
 ### Request Body (JSON)
 
-```
+```json
 {
   "firstname": "Jane",
   "lastname": "Smith",
@@ -120,7 +234,7 @@ Registers a new patient profile, initializes medical tracking limits, and automa
 
 ### Success Response (201 Created)
 
-```
+```json
 {
   "success": true,
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -157,7 +271,7 @@ Authenticates an existing patient using their email and password credentials.
 
 ### Request Body (JSON)
 
-```
+```json
 {
   "email": "jane.smith@example.com",
   "password": "securepassword123"
@@ -174,7 +288,7 @@ When an interface assertion fails, the API returns a corresponding HTTP status c
 
 ### Missing or Invalid Credentials (400 Bad Request)
 
-```
+```json
 {
   "success": false,
   "message": "Password and repeat password are required."
@@ -183,7 +297,7 @@ When an interface assertion fails, the API returns a corresponding HTTP status c
 
 ### Unauthorized Access (401 Unauthorized)
 
-```
+```json
 {
   "success": false,
   "message": "Invalid credentials"
