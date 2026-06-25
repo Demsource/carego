@@ -2,6 +2,7 @@ import { Router } from "express";
 import { registerNurse } from "../controllers/nurseRegistrationController.js";
 import { loginNurse } from "../controllers/nurseAuthController.js";
 import { upload } from "../utils/fileUpload.js";
+import { getPopularNursesList } from "../controllers/nurseFetchController.js";
 
 const router = Router();
 
@@ -17,5 +18,8 @@ router.post("/register", uploadFields, registerNurse);
 
 // POST /api/nurses/login (Expects application/json raw body)
 router.post("/login", loginNurse);
+
+// Fetch Popular/Top Nurses
+router.get("/popular", getPopularNursesList);
 
 export default router;
