@@ -10,3 +10,12 @@ export const getPopularNurses = async (): Promise<Partial<INurse>[]> => {
 
   return popularNurses;
 };
+
+// Fetch all nurses with the optimized card-view projection
+export const getAllNursesCards = async (): Promise<Partial<INurse>[]> => {
+  const allNurses = await Nurse.find({})
+    .select("photoUrl firstname lastname workExperience specialization")
+    .lean();
+
+  return allNurses;
+};
