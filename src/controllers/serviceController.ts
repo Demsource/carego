@@ -12,8 +12,14 @@ export const getAllServices = async (
 ): Promise<void> => {
   try {
     // Delegate database logic to the service layer
-    const formattedServices = await fetchAndFormatServices();
-    res.status(200).json(formattedServices);
+    const services = await fetchAndFormatServices();
+
+    // Wrapped in standard application layout
+    res.status(200).json({
+      success: true,
+      count: services.length,
+      data: services,
+    });
   } catch (error) {
     // Pass control directly to the global error handler
     next(error);
@@ -29,7 +35,12 @@ export const getServiceNamesOnly = async (
   try {
     const names = await fetchServiceNamesOnly();
 
-    res.status(200).json(names);
+    // Wrapped in standard application layout
+    res.status(200).json({
+      success: true,
+      count: names.length,
+      data: names,
+    });
   } catch (error) {
     next(error);
   }
