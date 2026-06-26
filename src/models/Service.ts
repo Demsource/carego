@@ -1,6 +1,8 @@
 import { Schema, model, Document } from "mongoose";
 
 export interface IService extends Document {
+  createdAt: Date;
+  updatedAt: Date;
   name: string;
   img: string;
 }
