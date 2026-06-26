@@ -303,3 +303,72 @@ When an interface assertion fails, the API returns a corresponding HTTP status c
   "message": "Invalid credentials"
 }
 ```
+
+# 3. Services Endpoints
+
+## 3.1 Get All Services (Full Payload)
+
+Retrieves a complete list of medical and care services from the database, including metadata required for rendering full-service catalog interfaces.
+
+- **URL:** `/services`
+- **Method:** `GET`
+- **Content-Type:** `None`
+
+### Request Headers
+
+No authorization headers are required for this public route.
+
+### Request Body
+
+None (Empty query)
+
+### Success Response (200 OK)
+
+```json
+{
+  "success": true,
+  "count": 2,
+  "data": [
+    {
+      "_id": "6a3964ae033157dbfaee8cd1",
+      "name": "injection",
+      "img": "[https://res.cloudinary.com/carego/image/upload/v1234/services/injection.png](https://res.cloudinary.com/carego/image/upload/v1234/services/injection.png)",
+      "createdAt": "2026-06-25T10:00:00.000Z",
+      "updatedAt": "2026-06-25T10:00:00.000Z"
+    },
+    {
+      "_id": "6a3964ae033157dbfaee8cd2",
+      "name": "infusion",
+      "img": "[https://res.cloudinary.com/carego/image/upload/v1234/services/infusion.png](https://res.cloudinary.com/carego/image/upload/v1234/services/infusion.png)",
+      "createdAt": "2026-06-25T10:05:00.000Z",
+      "updatedAt": "2026-06-25T10:05:00.000Z"
+    }
+  ]
+}
+```
+
+## 3.2 Get Service Names Only
+
+Retrieves a lightweight, flattened list containing only the literal names of available services. This is optimal for populating select dropdowns, form checkboxes, or validation filters on the front-end.
+
+- **URL:** `/services/names`
+- **Method:** `GET`
+- **Content-Type:** `None`
+
+### Request Headers
+
+No authorization headers are required for this public route.
+
+### Request Body
+
+None (Empty query)
+
+### Success Response (200 OK)
+
+```json
+{
+  "success": true,
+  "count": 2,
+  "data": ["injection", "infusion"]
+}
+```
