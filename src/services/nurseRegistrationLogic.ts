@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { Nurse, INurse } from "../models/Nurse.js";
+import { Patient } from "../models/Patient.js";
 import { NurseAuthResponse } from "../types/auth.types.js";
 import { calculateAge, calculateExperience } from "../utils/calculations.js";
 
@@ -10,6 +11,37 @@ export const registerNurseAccount = async (
 ): Promise<NurseAuthResponse> => {
   if (!nurseData.birthDate) throw new Error("Birth date is required");
   if (!nurseData.passwordHash) throw new Error("Password is required");
+
+  // Cross-Table Uniqueness Verification (Email, Mobile, Government ID)
+  const { email, mobile, governmentId } = nurseData;
+
+  // Check against Nurse collection
+  const existingNurse = await Nurse.findOne({
+    $or: [{ email }, { mobile }, { governmentId }],
+  }).lean();
+
+  if (existingNurse) {
+    if (existingNurse.email === email)
+      throw new Error("Email is already registered as a nurse");
+    if (existingNurse.mobile === mobile)
+      throw new Error("Mobile number is already registered as a nurse");
+    if (existingNurse.governmentId === governmentId)
+      throw new Error("Government ID is already registered as a nurse");
+  }
+
+  // Check against Patient collection
+  const existingPatient = await Patient.findOne({
+    $or: [{ email }, { mobile }, { governmentId }],
+  }).lean();
+
+  if (existingPatient) {
+    if (existingPatient.email === email)
+      throw new Error("Email is already registered as a patient");
+    if (existingPatient.mobile === mobile)
+      throw new Error("Mobile number is already registered as a patient");
+    if (existingPatient.governmentId === governmentId)
+      throw new Error("Government ID is already registered as a patient");
+  }
 
   // Calculations
   const calculatedAge = calculateAge(nurseData.birthDate);

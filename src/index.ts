@@ -7,6 +7,7 @@ import { connectDB } from "./config/db.js";
 import serviceRoutes from "./routes/serviceRoutes.js";
 import nurseRoutes from "./routes/nurseRoutes.js";
 import patientRoutes from "./routes/patientRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
@@ -29,6 +30,9 @@ app.use("/api/services", serviceRoutes);
 app.use("/api/nurses", nurseRoutes);
 
 app.use("/api/patients", patientRoutes);
+
+// Mount the centralized authentication router
+app.use("/api/auth", authRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("CareGo Back-End is running perfectly");
