@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { Patient, IPatient } from "../models/Patient.js";
+import { Nurse } from "../models/Nurse.js";
 import { calculateAge } from "../utils/calculations.js";
 import { PatientAuthResponse } from "../types/auth.types.js";
 
@@ -10,10 +11,41 @@ export const registerPatientAccount = async (
   if (!patientData.birthDate) throw new Error("Birth date is required");
   if (!patientData.passwordHash) throw new Error("Password is required");
 
+  // Cross-Table Uniqueness Verification (Email, Mobile, Government ID)
+  const { email, mobile, governmentId } = patientData;
+
+  // Check against Patient collection
+  const existingPatient = await Patient.findOne({
+    $or: [{ email }, { mobile }, { governmentId }],
+  }).lean();
+
+  if (existingPatient) {
+    if (existingPatient.email === email)
+      throw new Error("Email is already registered as a patient");
+    if (existingPatient.mobile === mobile)
+      throw new Error("Mobile number is already registered as a patient");
+    if (existingPatient.governmentId === governmentId)
+      throw new Error("Government ID is already registered as a patient");
+  }
+
+  // Check against Nurse collection
+  const existingNurse = await Nurse.findOne({
+    $or: [{ email }, { mobile }, { governmentId }],
+  }).lean();
+
+  if (existingNurse) {
+    if (existingNurse.email === email)
+      throw new Error("Email is already registered as a nurse");
+    if (existingNurse.mobile === mobile)
+      throw new Error("Mobile number is already registered as a nurse");
+    if (existingNurse.governmentId === governmentId)
+      throw new Error("Government ID is already registered as a nurse");
+  }
+
   const calculatedAge = calculateAge(patientData.birthDate);
   const hashedPassword = await bcrypt.hash(patientData.passwordHash, 10);
 
-  // Initialize standard medical service slots matching patient template defaults[cite: 1]
+  // Initialize standard medical service slots matching patient template defaults
   const targetServices = [
     "injection",
     "infusion",

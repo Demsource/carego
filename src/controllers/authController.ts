@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { authenticatePatient } from "../services/patientAuthLogic.js";
+import { authenticateUser } from "../services/authLogic.js";
 
-export const loginPatient = async (
+export const loginUser = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -11,23 +11,21 @@ export const loginPatient = async (
 
     // HTTP-level validation check
     if (!email || !password) {
-      res
-        .status(400)
-        .json({
-          success: false,
-          message: "Please provide email and password.",
-        });
+      res.status(400).json({
+        success: false,
+        message: "Please provide email and password.",
+      });
       return;
     }
 
-    // Invoke our clean business service layer
-    const authData = await authenticatePatient({ email, password });
+    // Execute multi-table authentication context
+    const authData = await authenticateUser({ email, password });
 
-    // Respond with uniform layout structure matching the nurse login
+    // Respond with clean data
     res.status(200).json({
       success: true,
       token: authData.token,
-      data: authData.patient,
+      data: authData.user, // Includes the profile layout and the implicit role field
     });
   } catch (error: any) {
     // Catch 'Invalid credentials' or database exceptions and pass to error handling middleware

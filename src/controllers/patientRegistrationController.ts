@@ -36,7 +36,18 @@ export const registerPatient = async (
       token,
       data: patient,
     });
-  } catch (error) {
+  } catch (error: any) {
+    // Capture specific cross validation errors cleanly
+    if (
+      error instanceof Error &&
+      error.message.includes("already registered")
+    ) {
+      res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+      return;
+    }
     next(error);
   }
 };
