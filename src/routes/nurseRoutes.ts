@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { registerNurse } from "../controllers/nurseRegistrationController.js";
-import { loginNurse } from "../controllers/nurseAuthController.js";
 import { upload } from "../utils/fileUpload.js";
 import {
   getAllNursesList,
