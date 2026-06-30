@@ -72,7 +72,18 @@ export const registerNurse = async (
       token,
       data: nurse,
     });
-  } catch (error) {
+  } catch (error: any) {
+    // Intercept specific custom duplication messages and handle them cleanly
+    if (
+      error instanceof Error &&
+      error.message.includes("already registered")
+    ) {
+      res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+      return;
+    }
     next(error);
   }
 };

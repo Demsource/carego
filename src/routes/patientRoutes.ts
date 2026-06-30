@@ -8,7 +8,4 @@ const router = express.Router();
 // Patient Registration Route (Handles raw application/json)
 router.post("/register", registerPatient);
 
-// POST /api/patients/login (Expects application/json raw body)
-router.post("/login", loginPatient);
-
 export default router;
