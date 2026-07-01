@@ -5,6 +5,7 @@ export interface IServiceDocument {
   _id: string;
   name: string;
   img: string;
+  service_id: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -17,6 +18,7 @@ export const fetchAndFormatServices = async (): Promise<IServiceDocument[]> => {
     _id: service._id.toString(),
     name: service.name,
     img: service.img,
+    service_id: service.service_id,
     // Extracts the timestamp directly from MongoDB's internal _id, no fallbacks needed
     createdAt: service.createdAt || service._id.getTimestamp(),
     updatedAt: service.updatedAt || service._id.getTimestamp(),
