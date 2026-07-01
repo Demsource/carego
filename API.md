@@ -1,6 +1,6 @@
 # CareGo API Documentation
 
-This documentation covers the authentication and registration endpoints for both **Nurses** and **Patients**.
+This comprehensive documentation covers the centralized authentication portal and cross-table registration workflows for both **Nurses** and **Patients**, as well as public service catalogs and global error standards.
 
 ## Base URL
 
@@ -12,7 +12,7 @@ https://carego.onrender.com/api
 
 ## 1.1 Nurse Registration
 
-Registers a new nurse profile, uploads files to Cloudinary, and automatically logs the user in by returning a JWT token.
+Registers a new nurse profile, uploads files to Cloudinary, and automatically logs the user in by returning a JWT token. Cross-checks against both collections to guarantee uniqueness.
 
 - URL: `/nurses/register`
 - Method: `POST`
@@ -71,28 +71,7 @@ Registers a new nurse profile, uploads files to Cloudinary, and automatically lo
 }
 ```
 
-## 1.2 Nurse Login
-
-Authenticates an existing nurse using their email and password.
-
-- URL: `/nurses/login`
-- Method: `POST`
-- Content-Type: `application/json`
-
-### Request Body (JSON)
-
-```json
-{
-  "email": "john.doe@example.com",
-  "password": "securepassword123"
-}
-```
-
-### Success Response (200 OK)
-
-Returns the same layout schema structure as registration, containing `success`, `token`, and the nurse profile metadata in `data`.
-
-## 1.3 Get Popular Nurses
+## 1.2 Get Popular Nurses
 
 Retrieves the top 4 popular nurses from the database. This is a public presentation endpoint that optimizes data transfer by projecting only the necessary fields required for the front-end display cards.
 
@@ -149,7 +128,7 @@ None (Empty query)
 }
 ```
 
-## 1.4 Get All Nurses (Card View)
+## 1.3 Get All Nurses (Card View)
 
 Retrieves a complete list of all registered nurses in the database. Like the popular nurses endpoint, this is a public presentation route designed specifically for rendering light front-end directory cards by limiting the payload to only the essential visual details.
 
@@ -210,7 +189,7 @@ None (Empty query)
 
 ## 2.1 Patient Registration
 
-Registers a new patient profile, initializes medical tracking limits, and automatically returns an authenticated session token.
+Registers a new patient profile, initializes medical tracking limits, and automatically returns an authenticated session token. Cross-checks against both collections to guarantee uniqueness.
 
 - URL: `/patients/register`
 - Method: `POST`
@@ -261,52 +240,49 @@ Registers a new patient profile, initializes medical tracking limits, and automa
 }
 ```
 
-## 2.2 Patient Login
+# 3. Unified Login Endpoints
 
-Authenticates an existing patient using their email and password credentials.
+## 3.1 Portal Login
 
-- URL: /patients/login
-- Method: POST
-- Content-Type: application/json
+A single entry route for both Nurses and Patients. The backend dynamically matches the correct record across databases and handles the login session context transparently.
+
+- URL: `/auth/login`
+- Method: `POST`
+- Content-Type: `application/json`
 
 ### Request Body (JSON)
 
 ```json
 {
-  "email": "jane.smith@example.com",
+  "email": "user@example.com",
   "password": "securepassword123"
 }
 ```
 
 ### Success Response (200 OK)
 
-Returns the uniform application layout format containing `success`, `token`, and the complete patient profile details in `data`.
-
-## Error Responses (Global)
-
-When an interface assertion fails, the API returns a corresponding HTTP status code along with a structured message instead of breaking down silently.
-
-### Missing or Invalid Credentials (400 Bad Request)
+The response dynamically yields the correct user mapping based on their system type (containing their specific database variables and structural properties alongside their dedicated `role` metadata).
 
 ```json
 {
-  "success": false,
-  "message": "Password and repeat password are required."
+  "success": true,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "data": {
+    "_id": "6a3964ae033157dbfaee8cce",
+    "firstname": "John",
+    "lastname": "Doe",
+    "email": "user@example.com",
+    "role": "nurse",
+    "age": 36,
+    "photoUrl": "[https://res.cloudinary.com/](https://res.cloudinary.com/)..."
+    // ... remaining user profile properties
+  }
 }
 ```
 
-### Unauthorized Access (401 Unauthorized)
+# 4. Services Endpoints
 
-```json
-{
-  "success": false,
-  "message": "Invalid credentials"
-}
-```
-
-# 3. Services Endpoints
-
-## 3.1 Get All Services (Full Payload)
+## 4.1 Get All Services (Full Payload)
 
 Retrieves a complete list of medical and care services from the database, including metadata required for rendering full-service catalog interfaces.
 
@@ -347,7 +323,7 @@ None (Empty query)
 }
 ```
 
-## 3.2 Get Service Names Only
+## 4.2 Get Service Names Only
 
 Retrieves a lightweight, flattened list containing only the literal names of available services. This is optimal for populating select dropdowns, form checkboxes, or validation filters on the front-end.
 
@@ -370,5 +346,27 @@ None (Empty query)
   "success": true,
   "count": 2,
   "data": ["injection", "infusion"]
+}
+```
+
+# Error Responses (Global)
+
+When an interface assertion fails, the API returns a corresponding HTTP status code along with a structured message instead of breaking down silently.
+
+### Missing or Invalid Credentials (400 Bad Request)
+
+```json
+{
+  "success": false,
+  "message": "Password and repeat password are required."
+}
+```
+
+### Unauthorized Access (401 Unauthorized)
+
+```json
+{
+  "success": false,
+  "message": "Invalid credentials"
 }
 ```
