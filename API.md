@@ -306,18 +306,20 @@ None (Empty query)
   "count": 2,
   "data": [
     {
-      "_id": "6a3964ae033157dbfaee8cd1",
-      "name": "injection",
-      "img": "[https://res.cloudinary.com/carego/image/upload/v1234/services/injection.png](https://res.cloudinary.com/carego/image/upload/v1234/services/injection.png)",
-      "createdAt": "2026-06-25T10:00:00.000Z",
-      "updatedAt": "2026-06-25T10:00:00.000Z"
+      "_id": "6a3ed3cce66dee40e3418f8f",
+      "name": "ინექცია",
+      "img": "https://i.ibb.co/yL7GPrT/Injection.webp",
+      "service_id": "injection",
+      "createdAt": "2026-06-26T19:32:28.000Z",
+      "updatedAt": "2026-06-26T19:32:28.000Z"
     },
     {
-      "_id": "6a3964ae033157dbfaee8cd2",
-      "name": "infusion",
-      "img": "[https://res.cloudinary.com/carego/image/upload/v1234/services/infusion.png](https://res.cloudinary.com/carego/image/upload/v1234/services/infusion.png)",
-      "createdAt": "2026-06-25T10:05:00.000Z",
-      "updatedAt": "2026-06-25T10:05:00.000Z"
+      "_id": "6a3ed58be66dee40e3418f90",
+      "name": "ინფუზია",
+      "img": "https://i.ibb.co/gLrrkntH/infusion.webp",
+      "service_id": "infusion",
+      "createdAt": "2026-06-26T19:39:55.000Z",
+      "updatedAt": "2026-06-26T19:39:55.000Z"
     }
   ]
 }

@@ -5,6 +5,7 @@ export interface IService extends Document {
   updatedAt: Date;
   name: string;
   img: string;
+  service_id: string;
 }
 
 const serviceSchema = new Schema<IService>(
@@ -17,6 +18,11 @@ const serviceSchema = new Schema<IService>(
     img: {
       type: String,
       required: true,
+    },
+    service_id: {
+      type: String,
+      required: true,
+      unique: true, // Ensuring strings like "injection", "infusion", etc., stay globally unique
     },
   },
   { timestamps: true }, // Keep track of when data is added
